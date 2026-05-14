@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+repo_root=$(unset CDPATH; cd -- "$(dirname -- "$0")/.." && pwd)
 
 find "$repo_root" -name '*.json' -not -path '*/.git/*' -print0 |
   while IFS= read -r -d '' file; do

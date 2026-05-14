@@ -49,8 +49,8 @@ if [ -z "$target" ]; then
   exit 1
 fi
 
-repo_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-target_dir=$(CDPATH= cd -- "$target" && pwd)
+repo_root=$(unset CDPATH; cd -- "$(dirname -- "$0")" && pwd)
+target_dir=$(unset CDPATH; cd -- "$target" && pwd)
 
 install_file() {
   source_file=$1
