@@ -90,6 +90,8 @@ hook が検査するのは、Claude Code が実行しようとしている comma
 
 この repository は prompt sanitization gateway ではありません。outbound prompt anonymization、reversible placeholder mapping、LLM gateway routing、MCP trust routing、response posthook inspection、multi-agent policy enforcement は実装しません。それらは `agent-privacy-guard` のような別レイヤの責務です。
 
+この repository は `secure-dev-hooks` と補完関係にあります。この repository は Claude Code runtime hardening、つまり sandbox、permissions、Managed Settings、Claude Code hooks に集中します。`secure-dev-hooks` は repository check、git hooks、通常の開発操作の前後で使う validation script など、development workflow hooks を扱います。
+
 ## インストール
 
 ```bash
@@ -160,6 +162,8 @@ docs/
   devcontainer.ja.md
   integration-with-agent-privacy-guard.md
   integration-with-agent-privacy-guard.ja.md
+  integration-with-secure-dev-hooks.md
+  integration-with-secure-dev-hooks.ja.md
 ```
 
 ## 注意

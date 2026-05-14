@@ -92,6 +92,8 @@ The hook checks the command text Claude Code is about to run. It does not expand
 
 This is not a prompt sanitization gateway. It does not implement outbound prompt anonymization, reversible placeholder mapping, LLM gateway routing, MCP trust routing, response posthook inspection, or multi-agent policy enforcement. Those belong to a separate layer such as `agent-privacy-guard`.
 
+This repository also complements `secure-dev-hooks`. This repository focuses on Claude Code runtime hardening: sandbox, permissions, Managed Settings, and Claude Code hooks. `secure-dev-hooks` focuses on development workflow hooks such as repository checks, git hooks, and validation scripts around normal development operations.
+
 ## Repository Layout
 
 ```text
@@ -122,6 +124,8 @@ docs/
   devcontainer.ja.md
   integration-with-agent-privacy-guard.md
   integration-with-agent-privacy-guard.ja.md
+  integration-with-secure-dev-hooks.md
+  integration-with-secure-dev-hooks.ja.md
 
 examples/
   demo.sh
