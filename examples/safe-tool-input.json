@@ -1,0 +1,11 @@
+{
+  "session_id": "demo-session",
+  "transcript_path": "/tmp/claude-code-demo.jsonl",
+  "cwd": "/workspace/example-app",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "git status",
+    "description": "Safe demo command"
+  }
+}
