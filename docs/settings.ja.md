@@ -50,6 +50,34 @@ deny rule は ask / allow より優先される前提で設計します。`permi
 
 この example では、common secret path を含む Bash command も deny しています。`cat .env` のような shell 経由の read は Claude Code の `Read` tool を通らないため、意図的に保守的にしています。
 
+## `.claudeignore` を使わない理由
+
+この repository では、secret file policy を別の ignore file ではなく `.claude/settings.json` に寄せています。
+
+主な control は次の通りです。
+
+- `permissions.deny`
+- sandbox の `filesystem.denyRead`
+- common secret path を検出する Bash PreToolUse hook
+
+これにより、各 app repository に install される Claude Code settings file の中で active policy を確認できます。
+
+## Production Environment Values
+
+Claude Code が読んでよい file には example value や dummy value を置きます。production value は app workspace の外、またはこの baseline で deny される path に置きます。
+
+推奨 layout:
+
+```text
+your-app/
+  .env.example          # dummy value
+  .env                  # local only。この baseline では deny
+  secrets/
+    .env.production     # production-like value。この baseline では deny
+```
+
+deployment には CI/CD environment variables や hosting provider の secret store を使います。通常の code change に raw production value は不要な状態にします。
+
 ## Network Allowlist
 
 `sandbox.network.allowedDomains` に開発で必要になりやすい domain を例示しています。

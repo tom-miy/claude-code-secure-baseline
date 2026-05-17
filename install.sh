@@ -7,8 +7,10 @@ Usage:
   ./install.sh --target /path/to/your-app [--force]
 
 Installs only the Claude Code hardening files:
+  CLAUDE.md
   .claude/settings.json
   .claude/hooks/validate-command.sh
+  .claude/skills/db-change-review/skill.md
 
 Existing files are not overwritten unless --force is provided.
 USAGE
@@ -66,6 +68,7 @@ install_file() {
   printf 'installed: %s\n' "$destination_file"
 }
 
+install_file "$repo_root/claude/CLAUDE.example.md" "$target_dir/CLAUDE.md"
 install_file "$repo_root/claude/settings.example.json" "$target_dir/.claude/settings.json"
 
 hook_destination="$target_dir/.claude/hooks/validate-command.sh"
@@ -79,4 +82,6 @@ if [ "$should_chmod_hook" = "true" ]; then
   chmod +x "$hook_destination"
 fi
 
-printf '\nDone. Review .claude/settings.json with Claude Code /status and /permissions before production use.\n'
+install_file "$repo_root/claude/skills/db-change-review/skill.md" "$target_dir/.claude/skills/db-change-review/skill.md"
+
+printf '\nDone. Review CLAUDE.md and .claude/settings.json with Claude Code /status, /permissions, and /memory before production use.\n'

@@ -16,6 +16,7 @@ Claude Code は file を読み、local command を実行できるので強力で
 - `.env` や private key などの secret file を「気をつける」ではなく deny rule として明示できる。
 - network access を暗黙にせず、allowlist として見える場所に置ける。
 - `.claude/settings.json` を通常の source code と同じように review できる。
+- `CLAUDE.md` と小さな skill example で high-risk work 向けの guidance を置ける。
 - project settings で足りない場合は、Managed Settings で組織や端末単位に強制できる。
 
 ## どこに置くのか
@@ -24,10 +25,14 @@ Claude Code は file を読み、local command を実行できるので強力で
 
 ```text
 your-app/
+  CLAUDE.md
   .claude/
     settings.json
     hooks/
       validate-command.sh
+    skills/
+      db-change-review/
+        skill.md
 ```
 
 この repository は hardening file と installer の配布元です。`your-app` に丸ごとコピーする前提ではありません。
@@ -44,8 +49,8 @@ Windows: C:\Program Files\ClaudeCode\managed-settings.json
 
 | 操作 | 起こること |
 | --- | --- |
-| `./examples/demo.sh` を実行する | fake の Claude Code Bash tool input を hook に渡します。`rm -rf` と `curl ... \| sh` は exit code `2` で block、`git status` は exit code `0` で allow されます。 |
-| `./install.sh --target /path/to/your-app` を実行する | 対象 app に `.claude/settings.json` と `.claude/hooks/validate-command.sh` を配置します。既存 file は上書きしません。 |
+| `./examples/demo.sh` を実行する | fake の Claude Code Bash tool input を hook に渡します。`rm -rf`、`curl ... \| sh`、destructive database command は exit code `2` で block、`git status` は exit code `0` で allow されます。 |
+| `./install.sh --target /path/to/your-app` を実行する | 対象 app に `CLAUDE.md`、`.claude/settings.json`、`.claude/hooks/validate-command.sh`、`.claude/skills/db-change-review/skill.md` を配置します。既存 file は上書きしません。 |
 | `./install.sh --target /path/to/your-app --force` を実行する | 同じ file を配置し、対象 app の既存 file を上書きします。 |
 | 対象 app で Claude Code を起動する | Claude Code が `.claude/settings.json` を読み、sandbox / permissions の例を適用し、Bash command の前に PreToolUse hook を実行します。 |
 | Claude Code が `rm -rf`、`curl ... \| sh`、`git push --force`、`chmod 777`、`prod` 系 command を実行しようとする | hook が stderr に理由を出して exit code `2` で終了し、Claude Code が Bash tool call を block します。 |
@@ -60,6 +65,8 @@ Windows: C:\Program Files\ClaudeCode\managed-settings.json
 2. app repository にこれが作られる:
    your-app/.claude/settings.json
    your-app/.claude/hooks/validate-command.sh
+   your-app/.claude/skills/db-change-review/skill.md
+   your-app/CLAUDE.md
 
 3. your-app の中で Claude Code を起動する。
 
@@ -83,6 +90,8 @@ hook が検査するのは、Claude Code が実行しようとしている comma
 - network allowlist の例
 - bypass permissions mode の無効化
 - PreToolUse Bash command validation hook
+- project `CLAUDE.md` guidance example
+- high-risk database change skill example
 - 組織向け Managed Settings 例
 - 最小構成の devcontainer isolation
 
@@ -104,11 +113,17 @@ hook が検査するのは、Claude Code が実行しようとしている comma
 
 ```text
 your-app/
+  CLAUDE.md
   .claude/
     settings.json
     hooks/
       validate-command.sh
+    skills/
+      db-change-review/
+        skill.md
 ```
+
+`CLAUDE.md` と `.claude/skills/db-change-review/skill.md` は guidance example です。high-risk work で Claude Code に立ち止まって承認を求めさせるための補助であり、enforcement は settings、sandbox、Managed Settings、hooks が担います。
 
 `scripts/lint.sh` と `examples/demo.sh` は、この baseline repository 自体のための file です。対象 app には install されません。`lint.sh` は、この repository で管理している JSON / shell script を検査するための script なので、runnable example である `examples/demo.sh` も lint 対象に含めています。
 
@@ -126,11 +141,12 @@ your-app/
 ./examples/demo.sh
 ```
 
-起こること: `examples/unsafe-rm-tool-input.json`、`examples/unsafe-tool-input.json`、`examples/safe-tool-input.json` を `validate-command.sh` に渡します。
+起こること: `examples/unsafe-rm-tool-input.json`、`examples/unsafe-tool-input.json`、`examples/unsafe-db-tool-input.json`、`examples/safe-tool-input.json` を `validate-command.sh` に渡します。
 
 ```text
 unsafe rm -rf     -> block, exit code 2
 unsafe curl pipe  -> block, exit code 2
+unsafe db command -> block, exit code 2
 safe git status   -> allow, exit code 0
 ```
 
@@ -160,6 +176,8 @@ docs/
   managed-settings.ja.md
   devcontainer.md
   devcontainer.ja.md
+  operational-guardrails.md
+  operational-guardrails.ja.md
   integration-with-agent-privacy-guard.md
   integration-with-agent-privacy-guard.ja.md
   integration-with-secure-dev-hooks.md

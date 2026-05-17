@@ -18,6 +18,7 @@ What you get:
 - Secret files are denied by explicit rules instead of relying on memory.
 - Network access is written down as an allowlist, not left implicit.
 - Teams can review `.claude/settings.json` like normal source code.
+- `CLAUDE.md` and a small skill example add project guidance for high-risk work.
 - Organization policy can move into Managed Settings when project settings are not enough.
 
 ## Where These Files Go
@@ -26,10 +27,14 @@ The settings that actually affect Claude Code for an app live inside that app re
 
 ```text
 your-app/
+  CLAUDE.md
   .claude/
     settings.json
     hooks/
       validate-command.sh
+    skills/
+      db-change-review/
+        skill.md
 ```
 
 This repository is the source repository for the hardening files and installer. It is not meant to be copied wholesale into `your-app`.
@@ -46,8 +51,8 @@ Windows: C:\Program Files\ClaudeCode\managed-settings.json
 
 | Action | What happens |
 | --- | --- |
-| Run `./examples/demo.sh` | The sample hook receives fake Claude Code Bash tool inputs. `rm -rf` and `curl ... \| sh` are blocked with exit code `2`; `git status` is allowed with exit code `0`. |
-| Run `./install.sh --target /path/to/your-app` | The target app gets `.claude/settings.json` and `.claude/hooks/validate-command.sh`. Existing files are skipped. |
+| Run `./examples/demo.sh` | The sample hook receives fake Claude Code Bash tool inputs. `rm -rf`, `curl ... \| sh`, and a destructive database command are blocked with exit code `2`; `git status` is allowed with exit code `0`. |
+| Run `./install.sh --target /path/to/your-app` | The target app gets `CLAUDE.md`, `.claude/settings.json`, `.claude/hooks/validate-command.sh`, and `.claude/skills/db-change-review/skill.md`. Existing files are skipped. |
 | Run `./install.sh --target /path/to/your-app --force` | The same files are installed, overwriting existing target files. |
 | Start Claude Code in the target app | Claude Code reads `.claude/settings.json`, applies sandbox / permission examples, and runs the PreToolUse hook before Bash commands. |
 | Claude Code tries `rm -rf`, `curl ... \| sh`, `git push --force`, `chmod 777`, or a `prod` command | The hook prints a reason to stderr and exits with code `2`, so Claude Code blocks the Bash tool call. |
@@ -62,6 +67,8 @@ Windows: C:\Program Files\ClaudeCode\managed-settings.json
 2. This appears in your app repository:
    your-app/.claude/settings.json
    your-app/.claude/hooks/validate-command.sh
+   your-app/.claude/skills/db-change-review/skill.md
+   your-app/CLAUDE.md
 
 3. Open Claude Code inside your app repository.
 
@@ -85,6 +92,8 @@ The hook checks the command text Claude Code is about to run. It does not expand
 - network allowlist examples
 - bypass permissions mode disabled
 - PreToolUse Bash command validation hook
+- project `CLAUDE.md` guidance example
+- high-risk database change skill example
 - managed settings example for organization policy
 - minimal devcontainer isolation sample
 
@@ -102,10 +111,14 @@ README.ja.md
 install.sh
 
 claude/
+  CLAUDE.example.md
   settings.example.json
   managed-settings.example.json
   hooks/
     validate-command.sh
+  skills/
+    db-change-review/
+      skill.md
 
 devcontainer/
   devcontainer.json
@@ -122,6 +135,8 @@ docs/
   managed-settings.ja.md
   devcontainer.md
   devcontainer.ja.md
+  operational-guardrails.md
+  operational-guardrails.ja.md
   integration-with-agent-privacy-guard.md
   integration-with-agent-privacy-guard.ja.md
   integration-with-secure-dev-hooks.md
@@ -129,6 +144,7 @@ docs/
 
 examples/
   demo.sh
+  unsafe-db-tool-input.json
   unsafe-rm-tool-input.json
   unsafe-tool-input.json
   safe-tool-input.json
@@ -149,11 +165,17 @@ This creates:
 
 ```text
 your-app/
+  CLAUDE.md
   .claude/
     settings.json
     hooks/
       validate-command.sh
+    skills/
+      db-change-review/
+        skill.md
 ```
+
+`CLAUDE.md` and `.claude/skills/db-change-review/skill.md` are guidance examples. They help Claude Code pause and ask for approval on high-risk work. Enforcement still belongs to settings, sandboxing, Managed Settings, and hooks.
 
 `scripts/lint.sh` and `examples/demo.sh` are for this baseline repository only. They are not installed into the target app. `lint.sh` checks the files maintained in this repository, including the runnable demo.
 
@@ -176,6 +198,7 @@ Result: the demo passes sample Claude Code PreToolUse JSON into `claude/hooks/va
 ```text
 unsafe rm -rf     -> blocked, exit code 2
 unsafe curl pipe  -> blocked, exit code 2
+unsafe db command -> blocked, exit code 2
 safe git status   -> allowed, exit code 0
 ```
 

@@ -50,6 +50,34 @@ Design these settings with the assumption that deny rules take precedence over a
 
 The example also denies Bash commands that reference common secret paths. This is intentionally conservative because shell-based reads such as `cat .env` do not go through the Claude Code `Read` tool.
 
+## Why This Repository Does Not Use `.claudeignore`
+
+This repository keeps sensitive file policy in `.claude/settings.json` instead of relying on a separate ignore file.
+
+The relevant controls are:
+
+- `permissions.deny`
+- sandbox `filesystem.denyRead`
+- Bash PreToolUse checks for common secret paths
+
+This makes the active policy visible in the Claude Code settings file that is installed into each app repository.
+
+## Production Environment Values
+
+Use example or dummy values for files Claude Code may inspect. Keep production values outside the app workspace, or under paths denied by this baseline.
+
+Recommended layout:
+
+```text
+your-app/
+  .env.example          # dummy values
+  .env                  # local only, denied by this baseline
+  secrets/
+    .env.production     # production-like values, denied by this baseline
+```
+
+Use CI/CD environment variables or hosting-provider secret stores for deployment. Claude Code should not need raw production values to implement normal code changes.
+
 ## Network Allowlist
 
 `sandbox.network.allowedDomains` includes common development domains:

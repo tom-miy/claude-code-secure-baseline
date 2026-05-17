@@ -72,6 +72,18 @@ if matches '(^|[;&|[:space:]])chmod[[:space:]]+([^;&|[:space:]]+[[:space:]]+)*\+
   block 'broad write chmod mode is denied'
 fi
 
+if matches '(^|[;&|[:space:]])(psql|mysql|sqlite3|mariadb|duckdb)([[:space:]][^;&|]*)?[[:space:]]+(-c|--execute|--command)[[:space:]]+.*(drop[[:space:]]+table|truncate([[:space:]]+table)?|delete[[:space:]]+from|update[[:space:]]+[[:alnum:]_."`]+[[:space:]]+set)'; then
+  block 'destructive database command is denied'
+fi
+
+if matches '(^|[;&|[:space:]])(psql|mysql|sqlite3|mariadb|duckdb)([[:space:]][^;&|]*)?[[:space:]]+.*(drop[[:space:]]+table|truncate([[:space:]]+table)?|delete[[:space:]]+from|update[[:space:]]+[[:alnum:]_."`]+[[:space:]]+set)'; then
+  block 'destructive database command is denied'
+fi
+
+if matches '(^|[;&|[:space:]])(drop[[:space:]]+table|truncate([[:space:]]+table)?|delete[[:space:]]+from|update[[:space:]]+[[:alnum:]_."`]+[[:space:]]+set)([[:space:]]|$)'; then
+  block 'destructive database statement is denied'
+fi
+
 file_access_command='(cat|less|more|tail|head|sed|awk|grep|rg|find|ls|stat|wc|cp|mv|tar|zip|unzip|open|code|vim|vi|nano|emacs)'
 path_prefix='['\''"]?([^;&|[:space:]'\''"]*/)?'
 path_suffix='['\''"]?([;&|>[:space:]]|$)'

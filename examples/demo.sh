@@ -50,6 +50,7 @@ run_case() {
 
 run_case "unsafe rm -rf" "$repo_root/examples/unsafe-rm-tool-input.json" 2
 run_case "unsafe curl pipe" "$repo_root/examples/unsafe-tool-input.json" 2
+run_case "unsafe database command" "$repo_root/examples/unsafe-db-tool-input.json" 2
 run_case "safe git status" "$repo_root/examples/safe-tool-input.json" 0
 
 printf '\n%s\n' "$(color '1;32' 'Demo complete.')"
