@@ -44,6 +44,15 @@ Examples:
 - `secrets/**`
 - `**/*.pem`
 - `~/.aws/credentials`
+- `~/.aws/config`
+- `~/.aws/sso/cache/**`
+- `~/.config/gcloud/**`
+- `~/.kube/config`
+- `~/.docker/config.json`
+- `~/.netrc`
+- `~/.npmrc`
+- `~/.pypirc`
+- `~/.gnupg/**`
 - `~/.ssh/**`
 
 Design these settings with the assumption that deny rules take precedence over ask and allow rules. `permissions.allow` is intentionally limited to a small set of safe commands.
@@ -102,3 +111,14 @@ The operating model is deny by default. Add only the domains required by the pro
 ```
 
 This disables bypass permissions mode, including the equivalent of `--dangerously-skip-permissions`. Put this setting in Managed Settings when an organization needs to make it difficult for users or project settings to override.
+
+## Version and Runtime Checks
+
+This repository cannot update Claude Code for you. Keep Claude Code on the official installation and update path for your environment.
+
+After installing or changing the baseline in an app repository:
+
+- run Claude Code from the target app repository
+- check `/status` for the active sandbox state
+- check `/permissions` for the active allow, ask, deny, hooks, and Managed Settings rules
+- compare the active behavior with the current Claude Code documentation before relying on it in production work

@@ -44,6 +44,15 @@ your-app/
 - `secrets/**`
 - `**/*.pem`
 - `~/.aws/credentials`
+- `~/.aws/config`
+- `~/.aws/sso/cache/**`
+- `~/.config/gcloud/**`
+- `~/.kube/config`
+- `~/.docker/config.json`
+- `~/.netrc`
+- `~/.npmrc`
+- `~/.pypirc`
+- `~/.gnupg/**`
 - `~/.ssh/**`
 
 deny rule は ask / allow より優先される前提で設計します。`permissions.allow` は最小限の safe command だけに絞っています。
@@ -102,3 +111,14 @@ deployment には CI/CD environment variables や hosting provider の secret st
 ```
 
 この設定は `--dangerously-skip-permissions` 相当の bypass mode を無効化するためのものです。組織で強制したい場合は Managed Settings に置くと、ユーザーや project settings で上書きしにくくなります。
+
+## Version と Runtime の確認
+
+この repository は Claude Code 本体を更新しません。Claude Code 本体は、利用環境向けの公式 installation / update 手順で最新に保ちます。
+
+app repository に baseline を install / 変更したあと、次を確認します。
+
+- 対象 app repository から Claude Code を起動する
+- `/status` で sandbox の有効状態を確認する
+- `/permissions` で allow / ask / deny / hooks / Managed Settings の有効状態を確認する
+- production work に使う前に、現在の Claude Code 公式 docs と active behavior を照合する

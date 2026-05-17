@@ -84,6 +84,16 @@ The practical win is not that this makes Claude Code secure by magic. The win is
 
 The hook checks the command text Claude Code is about to run. It does not expand shell aliases, shell functions, or wrapper scripts. For example, if `nuke` is an alias for `rm -rf`, the hook sees `nuke path`, not the expanded `rm -rf path`. Keep sandbox, permissions, and Managed Settings enabled so hidden behavior is still constrained at runtime.
 
+## Before You Rely on It
+
+After installing this baseline into an app repository:
+
+- Keep Claude Code itself updated with the official installation and update path for your environment.
+- Run Claude Code inside the target app and check `/status` for the active sandbox state.
+- Check `/permissions` to confirm the expected deny, ask, allow, hook, and Managed Settings rules are active.
+- Review any existing `.claude/` files before trusting an unknown repository.
+- Review MCP servers, plugins, and skills before enabling them, and prefer organization-managed allowlists for shared environments.
+
 ## What This Covers
 
 - Claude Code sandbox examples
@@ -94,6 +104,7 @@ The hook checks the command text Claude Code is about to run. It does not expand
 - PreToolUse Bash command validation hook
 - project `CLAUDE.md` guidance example
 - high-risk database change skill example
+- unknown repository trust checklist for `.claude/` files
 - managed settings example for organization policy
 - minimal devcontainer isolation sample
 
@@ -125,22 +136,7 @@ devcontainer/
   Dockerfile
 
 docs/
-  architecture.md
-  architecture.ja.md
-  settings.md
-  settings.ja.md
-  hooks.md
-  hooks.ja.md
-  managed-settings.md
-  managed-settings.ja.md
-  devcontainer.md
-  devcontainer.ja.md
-  operational-guardrails.md
-  operational-guardrails.ja.md
-  integration-with-agent-privacy-guard.md
-  integration-with-agent-privacy-guard.ja.md
-  integration-with-secure-dev-hooks.md
-  integration-with-secure-dev-hooks.ja.md
+  ...
 
 examples/
   demo.sh
@@ -152,6 +148,19 @@ examples/
 scripts/
   lint.sh
 ```
+
+## Docs by Purpose
+
+| Need | English | Japanese |
+| --- | --- | --- |
+| Understand the repository boundary and layer split | [architecture.md](docs/architecture.md) | [architecture.ja.md](docs/architecture.ja.md) |
+| Tune `.claude/settings.json` for an app repository | [settings.md](docs/settings.md) | [settings.ja.md](docs/settings.ja.md) |
+| Understand what the PreToolUse hook blocks | [hooks.md](docs/hooks.md) | [hooks.ja.md](docs/hooks.ja.md) |
+| Roll out organization-level policy | [managed-settings.md](docs/managed-settings.md) | [managed-settings.ja.md](docs/managed-settings.ja.md) |
+| Run Claude Code inside a devcontainer boundary | [devcontainer.md](docs/devcontainer.md) | [devcontainer.ja.md](docs/devcontainer.ja.md) |
+| Review unknown repositories, MCP, plugins, skills, and production-adjacent work | [operational-guardrails.md](docs/operational-guardrails.md) | [operational-guardrails.ja.md](docs/operational-guardrails.ja.md) |
+| Separate this repo from `agent-privacy-guard` | [integration-with-agent-privacy-guard.md](docs/integration-with-agent-privacy-guard.md) | [integration-with-agent-privacy-guard.ja.md](docs/integration-with-agent-privacy-guard.ja.md) |
+| Use this repo with `secure-dev-hooks` | [integration-with-secure-dev-hooks.md](docs/integration-with-secure-dev-hooks.md) | [integration-with-secure-dev-hooks.ja.md](docs/integration-with-secure-dev-hooks.ja.md) |
 
 ## Install Into an App Repository
 

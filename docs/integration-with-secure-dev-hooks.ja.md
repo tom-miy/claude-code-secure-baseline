@@ -34,6 +34,18 @@ secure-dev-hooks
 
 「Claude Code に何を許可するか」を扱う場合はこの repository を使います。「この repository の開発 workflow で何を許可するか」を扱う場合は `secure-dev-hooks` を使います。
 
+## 責務の対応表
+
+| やりたいこと | 主な置き場所 |
+| --- | --- |
+| Claude Code が `.env`、private key、cloud credentials を読むのを止める | `claude-code-secure-baseline` |
+| Claude Code が危険な Bash command を実行するのを止める | `claude-code-secure-baseline` |
+| Claude Code の MCP server / hook policy を組織管理にする | `claude-code-secure-baseline` の Managed Settings |
+| credentials が commit されるのを止める | `secure-dev-hooks` |
+| AI-generated diff の危険変更を commit / push 前に警告する | `secure-dev-hooks` |
+| CODEOWNERS review や protected branch を merge 条件にする | GitHub repository settings |
+| GitHub Actions token permission を最小化する | GitHub workflow file と repository settings |
+
 同じ app repository で併用できますが、責務は分けます。
 
 ```text

@@ -41,6 +41,31 @@ your-app/
 
 deployment には CI/CD environment variables や hosting provider の secret store を使います。Claude Code には raw production value ではなく、example、local dummy value、設定名の docs を見せます。
 
+## 未知 Repository を Trust する前の確認
+
+自分が作ったものではない repository を trust する前に、Claude Code 関連 file を確認します。この baseline はそれらを review しやすくするためのものですが、repository 側に独自の local policy が入っていることがあります。
+
+確認するもの:
+
+- `.claude/settings.json` に広すぎる `allow`、sandbox 無効化、bypass 設定の緩和がないか
+- `.claude/hooks/` に tool use の前後で実行される script がないか
+- `.claude/skills/` に外部送信、production access、credential handling を促す instruction がないか
+- MCP server 定義が未知の endpoint や command を向いていないか
+- project `CLAUDE.md` が team policy と矛盾していないか
+
+意外な `.claude/` 挙動がある repository は、`/status` と `/permissions` で effective settings を理解するまで trust しません。
+
+## MCP、Plugin、Skill
+
+MCP server、plugin、skill は、Claude Code ができることや振る舞いを拡張します。この repository は MCP trust routing を実装しません。runtime permissions と hooks を中心に、Claude Code local hardening の例を提供します。
+
+shared environment では次を推奨します。
+
+- 既知または公式の MCP server、plugin、skill を優先する
+- MCP server configuration は小さく review しやすく保つ
+- 組織として allowed set を制御したい場合は `allowManagedMcpServersOnly` などの Managed Settings を使う
+- skill は guidance であり enforcement ではないものとして扱う
+
 ## Skills
 
 `claude/skills/db-change-review/skill.md` は high-risk database work 向けの軽量な approval-flow example です。

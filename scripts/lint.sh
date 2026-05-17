@@ -8,6 +8,10 @@ find "$repo_root" -name '*.json' -not -path '*/.git/*' -print0 |
     jq empty "$file"
   done
 
+for file in "$repo_root/install.sh" "$repo_root/examples/demo.sh" "$repo_root/scripts/lint.sh" "$repo_root/claude/hooks/validate-command.sh"; do
+  bash -n "$file"
+done
+
 if command -v shellcheck >/dev/null 2>&1; then
   # Lint maintained shell entrypoints in this baseline repository,
   # including runnable examples. These files are not all installed into apps.

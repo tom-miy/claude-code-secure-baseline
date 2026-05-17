@@ -108,11 +108,15 @@ if matches "(^|[;&|[:space:]])$file_access_command([[:space:]][^;&|]*)?[[:space:
   block 'AWS credential file access is denied'
 fi
 
+if matches "(^|[;&|[:space:]])$file_access_command([[:space:]][^;&|]*)?[[:space:]<]+['\''\"]?(~[^/[:space:]'\''\"]*/|\\\$home/|/users/[^/[:space:]'\''\"]+/|/home/[^/[:space:]'\''\"]+/)(\\.aws/(config|sso/cache(/[^;&|[:space:]'\''\"]*)?)|\\.config/gcloud(/[^;&|[:space:]'\''\"]*)?|\\.kube/config|\\.docker/config\\.json|\\.netrc|\\.npmrc|\\.pypirc|\\.gnupg(/[^;&|[:space:]'\''\"]*)?)['\''\"]?([;&|>[:space:]]|$)"; then
+  block 'sensitive home credential path access is denied'
+fi
+
 if matches "(^|[;&|[:space:]])$file_access_command([[:space:]][^;&|]*)?[[:space:]<]+['\''\"]?(~[^/[:space:]'\''\"]*/|\\\$home/|/users/[^/[:space:]'\''\"]+/|/home/[^/[:space:]'\''\"]+/)\\.ssh(/|['\''\"]?([;&|>[:space:]]|$))"; then
   block 'SSH directory access is denied'
 fi
 
-if matches '(^|[;&|[:space:]])(sh|bash|zsh|dash)[[:space:]]+([^;&|[:space:]]+[[:space:]]+)*-[[:alpha:]]*c[[:alpha:]]*[[:space:]]+.*(\.env([^[:alnum:]_]|$)|secrets(/|[^[:alnum:]_]|$)|config/credentials\.json|\.pem([^[:alnum:]_]|$)|\.key([^[:alnum:]_]|$)|\.aws/credentials|\.ssh(/|[^[:alnum:]_]|$))'; then
+if matches '(^|[;&|[:space:]])(sh|bash|zsh|dash)[[:space:]]+([^;&|[:space:]]+[[:space:]]+)*-[[:alpha:]]*c[[:alpha:]]*[[:space:]]+.*(\.env([^[:alnum:]_]|$)|secrets(/|[^[:alnum:]_]|$)|config/credentials\.json|\.pem([^[:alnum:]_]|$)|\.key([^[:alnum:]_]|$)|\.aws/(credentials|config|sso/cache)|\.config/gcloud|\.kube/config|\.docker/config\.json|\.netrc|\.npmrc|\.pypirc|\.gnupg(/|[^[:alnum:]_]|$)|\.ssh(/|[^[:alnum:]_]|$))'; then
   block 'nested shell secret access is denied'
 fi
 

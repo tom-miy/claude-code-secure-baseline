@@ -34,6 +34,18 @@ secure-dev-hooks
 
 Use this repository when the question is "what should Claude Code be allowed to do?" Use `secure-dev-hooks` when the question is "what should this repository's development workflow allow?"
 
+## Responsibility Map
+
+| Need | Primary place |
+| --- | --- |
+| Block Claude Code from reading `.env`, private keys, or cloud credentials | `claude-code-secure-baseline` |
+| Block Claude Code from running dangerous Bash commands | `claude-code-secure-baseline` |
+| Keep Claude Code MCP server and hook policy organization-managed | `claude-code-secure-baseline` Managed Settings |
+| Block credentials from being committed | `secure-dev-hooks` |
+| Warn on dangerous AI-generated diffs before commit or push | `secure-dev-hooks` |
+| Require CODEOWNERS review or protected branches before merge | GitHub repository settings |
+| Minimize GitHub Actions token permissions | GitHub workflow files and repository settings |
+
 They can be used together in the same app repository, but they should stay separate:
 
 ```text
