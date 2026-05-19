@@ -1,6 +1,6 @@
-# Devcontainer Isolation
+# Devcontainer による分離
 
-`devcontainer/` は Claude Code を isolated devcontainer で動かすための最小 sample です。
+`devcontainer/` は Claude Code を分離された devcontainer で動かすための最小サンプルです。
 
 ```text
 devcontainer/
@@ -10,12 +10,12 @@ devcontainer/
 
 ## 目的
 
-- host machine からの隔離
-- workspace boundary の明確化
-- toolchain の固定
-- network allowlist / firewall の補助
+- ホストマシンからの隔離
+- 作業領域の境界の明確化
+- ツールチェーンの固定
+- ネットワーク許可リスト / ファイアウォールの補助
 
-この sample は意図的に小さくしています。app workspace を container に入れる例であり、完全な network firewall ではありません。
+このサンプルは意図的に小さくしています。アプリの作業領域をコンテナに入れる例であり、完全なネットワークファイアウォールではありません。
 
 ## 含めているもの
 
@@ -25,8 +25,8 @@ devcontainer/
 - `curl`
 - `ca-certificates`
 
-`runArgs` では capability drop と `no-new-privileges` を設定しています。必要に応じて project 側で追加 hardening を行ってください。
+`runArgs` では capability drop と `no-new-privileges` を設定しています。必要に応じてプロジェクト側で追加の強化を行ってください。
 
 ## 注意
 
-devcontainer は app workspace と host machine を分けるための補助です。Claude Code permissions、sandbox、PreToolUse hook、Managed Settings が必要な場合は、それらも別途設定してください。
+devcontainer はアプリの作業領域とホストマシンを分けるための補助です。Claude Code の権限設定、サンドボックス、PreToolUse フック、管理設定が必要な場合は、それらも別途設定してください。

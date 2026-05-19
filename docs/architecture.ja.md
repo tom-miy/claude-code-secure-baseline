@@ -1,18 +1,18 @@
-# Architecture
+# アーキテクチャ
 
-この repository は Claude Code hardening baseline です。目的は Claude Code がローカル環境で実行できる command、file access、network access、hook を制限することです。
+このリポジトリは、Claude Code を安全に使うための実行権限制御の基準です。目的は Claude Code がローカル環境で実行できるコマンド、ファイルアクセス、ネットワークアクセス、フックを制限することです。
 
 ## レイヤ分離
 
 ```text
-Claude Code hardening
-  -> Claude Code が実行できる tool / command / file / network を制限する
+Claude Code の実行権限制御
+  -> Claude Code が実行できるツール / コマンド / ファイル / ネットワークを制限する
 
 agent-privacy-guard
-  -> 外部 LLM に送る prompt を sanitize し、response を posthook で検査する
+  -> 外部 LLM に送るプロンプトを無害化し、応答を後段フックで検査する
 ```
 
-対象 repository では次のように分けます。
+対象リポジトリでは次のように分けます。
 
 ```text
 your-app/
@@ -28,14 +28,14 @@ your-app/
       posthook.sh
 ```
 
-`.claude/` は Claude Code の実行権限制御、`.agent-privacy-guard/` は gateway policy です。この repository では `.agent-privacy-guard/` を生成しません。
+`.claude/` は Claude Code の実行権限制御、`.agent-privacy-guard/` はゲートウェイポリシーです。このリポジトリでは `.agent-privacy-guard/` を生成しません。
 
 ## 防御ポイント
 
-- sandbox: Bash command の filesystem / network 境界を作る
-- permissions: Claude Code tool の allow / ask / deny を設定する
-- hooks: PreToolUse で command を検査する
-- Managed Settings: 組織が上書きしにくい policy を配布する
-- devcontainer: host machine と workspace の境界を補助する
+- サンドボックス: Bash コマンドのファイルシステム / ネットワーク境界を作る
+- 権限設定: Claude Code ツールの許可 / 確認 / 拒否を設定する
+- フック: PreToolUse でコマンドを検査する
+- 管理設定: 組織が上書きしにくいポリシーを配布する
+- devcontainer: ホストマシンと作業領域の境界を補助する
 
-これらは重ねて使う前提です。hook だけ、devcontainer だけ、deny rule だけに依存しないでください。
+これらは重ねて使う前提です。フックだけ、devcontainer だけ、拒否ルールだけに依存しないでください。

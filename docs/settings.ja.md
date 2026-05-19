@@ -1,8 +1,8 @@
-# Claude Code Settings
+# Claude Code 設定
 
-`claude/settings.example.json` は、アプリ repository の `.claude/settings.json` に配置するための example です。
+`claude/settings.example.json` は、アプリのリポジトリの `.claude/settings.json` に配置するための例です。
 
-実際に有効になる project settings は、Claude Code を使うメイン app repository 内に置きます。
+実際に有効になるプロジェクト設定は、Claude Code を使うメインアプリのリポジトリ内に置きます。
 
 ```text
 your-app/
@@ -12,9 +12,9 @@ your-app/
       validate-command.sh
 ```
 
-この repository は hardening file の配布元として扱います。各 app repository には必要な `.claude/` file だけを install / copy します。
+このリポジトリは実行権限制御ファイルの配布元として扱います。各アプリのリポジトリには必要な `.claude/` ファイルだけをインストール / コピーします。
 
-## Sandbox
+## サンドボックス
 
 ```json
 {
@@ -25,13 +25,13 @@ your-app/
 }
 ```
 
-`allowUnsandboxedCommands: false` は、sandbox を外して Bash command を実行する escape hatch を無効化するための設定です。macOS、Linux、WSL2 で sandbox の実装や制約は異なるため、実運用前に Claude Code の `/status` で sandbox が有効になっているか確認してください。
+`allowUnsandboxedCommands: false` は、サンドボックスを外して Bash コマンドを実行する抜け道を無効化するための設定です。macOS、Linux、WSL2 でサンドボックスの実装や制約は異なるため、実運用前に Claude Code の `/status` でサンドボックスが有効になっているか確認してください。
 
-`failIfUnavailable` は `true` にしています。sandbox が使えない環境では Claude Code が止まり、期待した sandbox 境界なしに Bash command が実行されることを避けます。未対応環境では不便になりますが、安全側に倒す設定です。
+`failIfUnavailable` は `true` にしています。サンドボックスが使えない環境では Claude Code が止まり、期待したサンドボックス境界なしに Bash コマンドが実行されることを避けます。未対応環境では不便になりますが、安全側に倒す設定です。
 
-## Permissions
+## 権限設定
 
-`permissions.deny` では、危険 command と secret file read を拒否する例を置いています。
+`permissions.deny` では、危険コマンドと機密ファイル読み取りを拒否する例を置いています。
 
 対象例:
 
@@ -55,41 +55,41 @@ your-app/
 - `~/.gnupg/**`
 - `~/.ssh/**`
 
-deny rule は ask / allow より優先される前提で設計します。`permissions.allow` は最小限の safe command だけに絞っています。
+拒否ルールは確認 / 許可ルールより優先される前提で設計します。`permissions.allow` は最小限の安全なコマンドだけに絞っています。
 
-この example では、common secret path を含む Bash command も deny しています。`cat .env` のような shell 経由の read は Claude Code の `Read` tool を通らないため、意図的に保守的にしています。
+この例では、一般的な機密パスを含む Bash コマンドも拒否しています。`cat .env` のようなシェル経由の読み取りは Claude Code の `Read` ツールを通らないため、意図的に保守的にしています。
 
 ## `.claudeignore` を使わない理由
 
-この repository では、secret file policy を別の ignore file ではなく `.claude/settings.json` に寄せています。
+このリポジトリでは、機密ファイルポリシーを別の ignore ファイルではなく `.claude/settings.json` に寄せています。
 
 主な control は次の通りです。
 
 - `permissions.deny`
-- sandbox の `filesystem.denyRead`
-- common secret path を検出する Bash PreToolUse hook
+- サンドボックスの `filesystem.denyRead`
+- 一般的な機密パスを検出する Bash PreToolUse フック
 
-これにより、各 app repository に install される Claude Code settings file の中で active policy を確認できます。
+これにより、各アプリのリポジトリにインストールされる Claude Code 設定ファイルの中で有効なポリシーを確認できます。
 
-## Production Environment Values
+## 本番環境の値
 
-Claude Code が読んでよい file には example value や dummy value を置きます。production value は app workspace の外、またはこの baseline で deny される path に置きます。
+Claude Code が読んでよいファイルには例の値やダミー値を置きます。本番環境の値はアプリの作業領域の外、またはこの基準で拒否されるパスに置きます。
 
-推奨 layout:
+推奨配置:
 
 ```text
 your-app/
-  .env.example          # dummy value
-  .env                  # local only。この baseline では deny
+  .env.example          # ダミー値
+  .env                  # ローカル用。この基準では拒否
   secrets/
-    .env.production     # production-like value。この baseline では deny
+    .env.production     # 本番に近い値。この基準では拒否
 ```
 
-deployment には CI/CD environment variables や hosting provider の secret store を使います。通常の code change に raw production value は不要な状態にします。
+デプロイには CI/CD 環境変数やホスティングプロバイダのシークレットストアを使います。通常のコード変更に生の本番値は不要な状態にします。
 
-## Network Allowlist
+## ネットワーク許可リスト
 
-`sandbox.network.allowedDomains` に開発で必要になりやすい domain を例示しています。
+`sandbox.network.allowedDomains` に開発で必要になりやすいドメインを例示しています。
 
 - `github.com`
 - `*.githubusercontent.com`
@@ -98,9 +98,9 @@ deployment には CI/CD environment variables や hosting provider の secret st
 - `pypi.org`
 - `files.pythonhosted.org`
 
-考え方は deny-by-default です。必要な domain を allowlist に追加し、production や sensitive system への接続は `deniedDomains` や hook で別途 block します。
+考え方はデフォルト拒否です。必要なドメインを許可リストに追加し、本番や機密システムへの接続は `deniedDomains` やフックで別途拒否します。
 
-## Bypass Permissions
+## 権限バイパス
 
 ```json
 {
@@ -110,15 +110,15 @@ deployment には CI/CD environment variables や hosting provider の secret st
 }
 ```
 
-この設定は `--dangerously-skip-permissions` 相当の bypass mode を無効化するためのものです。組織で強制したい場合は Managed Settings に置くと、ユーザーや project settings で上書きしにくくなります。
+この設定は `--dangerously-skip-permissions` 相当のバイパスモードを無効化するためのものです。組織で強制したい場合は管理設定に置くと、ユーザーやプロジェクト設定で上書きしにくくなります。
 
-## Version と Runtime の確認
+## バージョンと実行時の確認
 
-この repository は Claude Code 本体を更新しません。Claude Code 本体は、利用環境向けの公式 installation / update 手順で最新に保ちます。
+このリポジトリは Claude Code 本体を更新しません。Claude Code 本体は、利用環境向けの公式インストール / 更新手順で最新に保ちます。
 
-app repository に baseline を install / 変更したあと、次を確認します。
+アプリのリポジトリに基準をインストール / 変更したあと、次を確認します。
 
-- 対象 app repository から Claude Code を起動する
-- `/status` で sandbox の有効状態を確認する
-- `/permissions` で allow / ask / deny / hooks / Managed Settings の有効状態を確認する
-- production work に使う前に、現在の Claude Code 公式 docs と active behavior を照合する
+- 対象アプリのリポジトリから Claude Code を起動する
+- `/status` でサンドボックスの有効状態を確認する
+- `/permissions` で許可 / 確認 / 拒否 / フック / 管理設定の有効状態を確認する
+- 本番に関わる作業に使う前に、現在の Claude Code 公式ドキュメントと有効な挙動を照合する
