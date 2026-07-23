@@ -1,6 +1,6 @@
 # Architecture
 
-This repository is a Claude Code hardening baseline. Its purpose is to restrict the commands, file access, network access, and hooks that Claude Code can use in a local development environment.
+This repository is a Claude Code hardening baseline. Its purpose is to restrict the commands, file access, and network access that Claude Code can use in a local development environment, enforced through permissions and hooks.
 
 ## Layer Separation
 
@@ -16,19 +16,19 @@ Use separate directories in an application repository:
 
 ```text
 your-app/
+  CLAUDE.md
   .claude/
     settings.json
     hooks/
       validate-command.sh
+    skills/
+      db-change-review/
+        skill.md
 
   .agent-privacy-guard/
-    policy.yaml
-    hooks/
-      prehook.sh
-      posthook.sh
 ```
 
-`.claude/` controls Claude Code execution permissions. `.agent-privacy-guard/` controls gateway policy. This repository does not generate `.agent-privacy-guard/`.
+`CLAUDE.md` and `.claude/` control Claude Code execution permissions and are the files `install.sh` installs. `.agent-privacy-guard/` controls gateway policy; this repository does not generate it. See [integration-with-agent-privacy-guard.md](integration-with-agent-privacy-guard.md) for its layout.
 
 ## Defense Points
 
